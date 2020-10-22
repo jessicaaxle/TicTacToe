@@ -61,8 +61,8 @@ public class GamController : MonoBehaviour
 
         if (turnCount > 4)
         {
-            bool isWinner = WinnerCheck();
-            if (turnCount == 9 && isWinner == false)
+            int isWinner = WinnerCheck();
+            if (turnCount == 9 && isWinner == 0)
             {
                 TieGame();
 
@@ -83,7 +83,7 @@ public class GamController : MonoBehaviour
         }
     }
 
-    bool WinnerCheck()
+    int WinnerCheck()
     {
         int s1 = markedSpaces[0] + markedSpaces[1] + markedSpaces[2];
         int s2 = markedSpaces[3] + markedSpaces[4] + markedSpaces[5];
@@ -99,32 +99,52 @@ public class GamController : MonoBehaviour
         {
             if (solutions[i] == 3 * (whosTurn + 1))
             {
-                DisplayWinner(i);
-                return true;
+
+                winnerPanel.gameObject.SetActive(true);
+                if (whosTurn == 0)
+                {
+                    xPlayScore++;
+                    xScoreText.text = xPlayScore.ToString();
+                    winnerText.text = "Player X Wins!";
+                    winningLines[i].SetActive(true);
+
+
+                    return 10; //if player 1 win return 10
+                }
+                if (whosTurn == 1)
+                {
+                    oPlayScore++;
+                    oScoreText.text = oPlayScore.ToString();
+                    winnerText.text = "Player O Wins!";
+                    winningLines[i].SetActive(true);
+
+                    
+                    return -10; //if player 2 wins return -10
+                }
 
 
             }
         }
-        return false;
+        return 0; //if no one wins return 0
     }
 
     void DisplayWinner(int indexIn)
     {
-        winnerPanel.gameObject.SetActive(true);
-        if (whosTurn == 0)
-        {
-            xPlayScore++;
-            xScoreText.text = xPlayScore.ToString();
-            winnerText.text = "Player X Wins!";
-        }
-        if (whosTurn == 1)
-        {
-            oPlayScore++;
-            oScoreText.text = oPlayScore.ToString();
-            winnerText.text = "Player O Wins!";
-        }
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
 
-        winningLines[indexIn].SetActive(true);
+        
 
     }
 
