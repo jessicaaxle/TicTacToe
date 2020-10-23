@@ -2,11 +2,16 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+//___________________________________________________________________
+//Jessica Le 100555079
+//TIC TAC TOE BOARD: https://www.youtube.com/watch?v=v4LyyuYD14U&t=4s
+// MINIMAX: https://www.geeksforgeeks.org/minimax-algorithm-in-game-theory-set-3-tic-tac-toe-ai-finding-optimal-move/
+//___________________________________________________________________
 public class GamController : MonoBehaviour
 {
     public int whosTurn; //0=x, 1=o
     public int turnCount;// count the number of turns played
-    public GameObject[] turnIcons; //displays whos turn it is
+    //public GameObject[] turnIcons; //displays whos turn it is
     public Sprite[] playerIcons;// 0 = x and 1 = y icon
     public Button[] tictactoeSpaces; //playable spaces for our game
     public int[] markedSpaces; //IDs whoch space was marked by which player
@@ -29,8 +34,7 @@ public class GamController : MonoBehaviour
     {
         whosTurn = 0;
         turnCount = 0;
-        turnIcons[0].SetActive(true);
-        turnIcons[1].SetActive(false);
+        
         for (int i = 0; i < tictactoeSpaces.Length; i++)
         {
             tictactoeSpaces[i].interactable = true;
@@ -48,12 +52,12 @@ public class GamController : MonoBehaviour
     {
         if(whosTurn == 1)
         {
-            TicTacToeButton(AiMove());
+            TicTacToe(AiMove());
             whosTurn = 0;
         }
     }
 
-    public void TicTacToeButton(int whichNumber)
+    public void TicTacToe(int whichNumber)
     {
         tictactoeSpaces[whichNumber].image.sprite = playerIcons[whosTurn];
         tictactoeSpaces[whichNumber].interactable = false;
@@ -76,12 +80,14 @@ public class GamController : MonoBehaviour
         if (whosTurn == 0)
         {
             whosTurn = 1;
+            
         }
+        DisplayWin(canWin());
     }
 
     void DisplayWin(int winner)
     {
-        if(winner == 10) //human wins
+        if(winner == -10) //human wins
         {
             winnerPanel.gameObject.SetActive(true);
             Debug.Log("HUMAN WIN");
@@ -89,13 +95,13 @@ public class GamController : MonoBehaviour
             xScoreText.text = xPlayScore.ToString();
             winnerText.text = "Player X Wins!";
         }
-        if (winner == -10) //human wins
+        if (winner == 10) //human wins
         {
             winnerPanel.gameObject.SetActive(true);
             Debug.Log("AI WIN");
-            xPlayScore++;
-            xScoreText.text = xPlayScore.ToString();
-            winnerText.text = "Player X Wins!";
+            oPlayScore++;
+            oScoreText.text = oPlayScore.ToString();
+            winnerText.text = "Player O Wins!";
         }
         if (winner == 0) //TIE wins
         {
@@ -123,12 +129,12 @@ public class GamController : MonoBehaviour
         {
             if (solutions[i] == 3)
             {
-                return 10; //if player 1 win return 10
+                return -10; //if player 1 win return -10
             }
 
             if (solutions[i] == 6)
             {
-                return -10; //if player 1 win return 10
+                return 10; //if player 1 win return 10
             }
 
         }
@@ -138,13 +144,11 @@ public class GamController : MonoBehaviour
         {
             if (markedSpaces[j] == -100)
             {
-                //Debug.Log("3 Return");
                 return 3;
 
             }
             else if (j == 8)
             {
-                //Debug.Log("0 Return");
                 return 0;
             }
         }
@@ -166,13 +170,13 @@ public class GamController : MonoBehaviour
     {
         int score = canWin();
         //Debug.Log("SCORE" + score);
-        if(score ==10)
-        {
-            return 10;
-        }
         if(score == -10)
         {
             return -10;
+        }
+        if(score == 10)
+        {
+            return 10;
         }    
         if(score == 0)
         {
@@ -191,7 +195,7 @@ public class GamController : MonoBehaviour
                     if (board[i] == -100)
                     {
                         board[i] = 2;
-                        int theScore = minimax(board, depth + 1, true);
+                        int theScore = minimax(board, depth + 1, false);
                         //undo
                         best = Mathf.Max(theScore, best);
                         board[i] = -100;
@@ -211,7 +215,7 @@ public class GamController : MonoBehaviour
                     if (board[i] == -100)
                     {
                         board[i] = 1;
-                        int theScore = minimax(board, depth + 1, false);
+                        int theScore = minimax(board, depth + 1, true);
                         //undo
                         best = Mathf.Min(theScore, best);
                         board[i] = -100;
@@ -250,8 +254,8 @@ public class GamController : MonoBehaviour
                 }
             }
         }
-        DisplayWin(canWin());
-        Debug.Log("BEST MOVE" + bestMove); 
+        
+        
         return bestMove;
     }
     public void Rematch()
