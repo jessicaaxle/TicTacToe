@@ -48,8 +48,6 @@ public class GamController : MonoBehaviour
     {
         if(whosTurn == 1)
         {
-          
-
             TicTacToeButton(AiMove());
             whosTurn = 0;
         }
@@ -63,8 +61,8 @@ public class GamController : MonoBehaviour
         //1 = X filled
         //2 = O filled
         markedSpaces[whichNumber] = whosTurn + 1;
-        turnCount++;
-        canWin();
+        //turnCount++;
+        //canWin();
         //if (turnCount > 4)
         //{
         //    int isWinner = WinnerCheck();
@@ -78,99 +76,39 @@ public class GamController : MonoBehaviour
         if (whosTurn == 0)
         {
             whosTurn = 1;
-            turnIcons[0].SetActive(false);
-            turnIcons[1].SetActive(true);
-        }
-        else
-        {
-            whosTurn = 0;
-            turnIcons[0].SetActive(true);
-            turnIcons[1].SetActive(false);
         }
     }
 
-    int WinnerCheck()
+    void DisplayWin(int winner)
     {
-        int s1 = markedSpaces[0] + markedSpaces[1] + markedSpaces[2];
-        int s2 = markedSpaces[3] + markedSpaces[4] + markedSpaces[5];
-        int s3 = markedSpaces[6] + markedSpaces[7] + markedSpaces[8];
-        int s4 = markedSpaces[0] + markedSpaces[3] + markedSpaces[6];
-        int s5 = markedSpaces[1] + markedSpaces[4] + markedSpaces[7];
-        int s6 = markedSpaces[2] + markedSpaces[5] + markedSpaces[8];
-        int s7 = markedSpaces[0] + markedSpaces[4] + markedSpaces[8];
-        int s8 = markedSpaces[2] + markedSpaces[4] + markedSpaces[6];
-
-        var solutions = new int[] { s1, s2, s3, s4, s5, s6, s7, s8 };
-        for (int i = 0; i < solutions.Length; i++)
+        if(winner == 10) //human wins
         {
-            if (solutions[i] == 3 * (whosTurn + 1))
-            {
-
-                winnerPanel.gameObject.SetActive(true);
-                if (whosTurn == 0)
-                {
-                    xPlayScore++;
-                    xScoreText.text = xPlayScore.ToString();
-                    winnerText.text = "Player X Wins!";
-                    winningLines[i].SetActive(true);
-
-
-                    return 10; //if player 1 win return 10
-                }
-                if (whosTurn == 1)
-                {
-                    oPlayScore++;
-                    oScoreText.text = oPlayScore.ToString();
-                    winnerText.text = "Player O Wins!";
-                    winningLines[i].SetActive(true);
-
-                    
-                    return -10; //if player 2 wins return -10
-                }
-
-            }
-         
+            winnerPanel.gameObject.SetActive(true);
+            Debug.Log("HUMAN WIN");
+            xPlayScore++;
+            xScoreText.text = xPlayScore.ToString();
+            winnerText.text = "Player X Wins!";
         }
-       //for (int j = 0; j < 9; j++)
-       //{
-       //    if (markedSpaces[j] == 0)
-       //    {
-       //        Debug.Log("3 Return");
-       //        return 3;
-       //
-       //    }
-       //    else if (j == 8)
-       //    {
-       //        Debug.Log("0 Return");
-       //        return 0;
-       //    }
-       //}
-        Debug.Log("3 end Return");
-        return 3; //if no one wins return 0
+        if (winner == -10) //human wins
+        {
+            winnerPanel.gameObject.SetActive(true);
+            Debug.Log("AI WIN");
+            xPlayScore++;
+            xScoreText.text = xPlayScore.ToString();
+            winnerText.text = "Player X Wins!";
+        }
+        if (winner == 0) //TIE wins
+        {
+            winnerPanel.gameObject.SetActive(true);
+            Debug.Log("TIE GAME");
+            winnerPanel.SetActive(true);
+            TieImage.SetActive(true);   
+            winnerText.text = "TIE";
+        }
     }
-
-    void DisplayWinner(int indexIn)
-    {
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-
-        
-
-    }
-    
     int canWin()
     {//check the possibility of winning
+
         int s1 = markedSpaces[0] + markedSpaces[1] + markedSpaces[2];
         int s2 = markedSpaces[3] + markedSpaces[4] + markedSpaces[5];
         int s3 = markedSpaces[6] + markedSpaces[7] + markedSpaces[8];
@@ -183,38 +121,34 @@ public class GamController : MonoBehaviour
         var solutions = new int[] { s1, s2, s3, s4, s5, s6, s7, s8 };
         for (int i = 0; i < solutions.Length; i++)
         {
-            if (solutions[i] == 3 * (whosTurn + 1))
+            if (solutions[i] == 3)
             {
+                return 10; //if player 1 win return 10
+            }
 
-                if (whosTurn == 0)
-                {
-                    return 10; //if player 1 win return 10
-                }
-                if (whosTurn == 1)
-                {
-                    return -10; //if player 2 wins return -10
-                }
+            if (solutions[i] == 6)
+            {
+                return -10; //if player 1 win return 10
+            }
 
+        }
+
+        //check for a tie
+        for (int j = 0; j < 9; j++)
+        {
+            if (markedSpaces[j] == -100)
+            {
+                //Debug.Log("3 Return");
+                return 3;
 
             }
-           
+            else if (j == 8)
+            {
+                //Debug.Log("0 Return");
+                return 0;
+            }
         }
-        ////check for a tie
-        //for (int j = 0; j < 9; j++)
-        //{
-        //    if (markedSpaces[j] == 0)
-        //    {
-        //        Debug.Log("3 Return");
-        //        return 3;
-        //
-        //    }
-        //    else if (j == 8)
-        //    {
-        //        Debug.Log("0 Return");
-        //        return 0;
-        //    }
-        //}
-        return 0; //if no one wins return 0
+        return 3; //if no one wins return 0
     }
     bool movesLeft(int[] board)
     {
@@ -227,61 +161,66 @@ public class GamController : MonoBehaviour
         }
         return false;
     }
+
     int minimax(int[] board, int depth, bool isMax)
     {
         int score = canWin();
-        
-
+        //Debug.Log("SCORE" + score);
         if(score ==10)
         {
-            return score;
+            return 10;
         }
         if(score == -10)
         {
-            return score;
+            return -10;
         }    
-        if(movesLeft(board) == false)
+        if(score == 0)
         {
             return 0;
         }
-
-        if(isMax)
-        {
-            int best = -60;
-
-            for(int i=0; i<9; i++)
-            {
-                //check if the cell is empty
-                if(board[i] == -100)
-                {
-                    board[i] = 2;
-                    int theScore = minimax(board, depth + 1, false);
-                    //undo
-                    board[i] = -100;
-                    best = Mathf.Max(best, theScore);
-
-                }
-            }
-            return best;
-        }
-
         else
-        {
-            int best = 60;
 
-            for (int i = 0; i < 9; i++)
+        {
+            if (isMax == true)
             {
-                if(board[i]==-100)
+                int best = -60;
+
+                for (int i = 0; i < 9; i++)
                 {
-                    board[i] = 1;
-                    int theScore = minimax(board, depth + 1, true);
-                    //undo
-                    board[i] = -100;
-                    best = Mathf.Min(best, theScore);
+                    //check if the cell is empty
+                    if (board[i] == -100)
+                    {
+                        board[i] = 2;
+                        int theScore = minimax(board, depth + 1, true);
+                        //undo
+                        best = Mathf.Max(theScore, best);
+                        board[i] = -100;
+
+                    }
                 }
+                return best;
             }
-            return best;
+
+            else 
+            {
+                
+                int best = 60;
+
+                for (int i = 0; i < 9; i++)
+                {
+                    if (board[i] == -100)
+                    {
+                        board[i] = 1;
+                        int theScore = minimax(board, depth + 1, false);
+                        //undo
+                        best = Mathf.Min(theScore, best);
+                        board[i] = -100;
+                    }
+                }
+                return best;
+            }
         }
+       
         
     }
 
@@ -298,7 +237,7 @@ public class GamController : MonoBehaviour
 
                 //find move
                 int moveVal = minimax(markedSpaces, 0, false);
-
+                
                 //undo
                 markedSpaces[i] = -100;
 
@@ -306,9 +245,13 @@ public class GamController : MonoBehaviour
                 {
                     bestMove = i;
                     bestVal = moveVal;
+                    Debug.Log("MoveVal" + moveVal);
+                    Debug.Log("BESTVAL" + bestVal);
                 }
             }
         }
+        DisplayWin(canWin());
+        Debug.Log("BEST MOVE" + bestMove); 
         return bestMove;
     }
     public void Rematch()
@@ -330,12 +273,5 @@ public class GamController : MonoBehaviour
 
         xScoreText.text = "0";
         oScoreText.text = "0";
-    }
-
-    void TieGame()
-    {
-        winnerPanel.SetActive(true);
-        TieImage.SetActive(true);
-        winnerText.text = "TIE";
     }
 }
